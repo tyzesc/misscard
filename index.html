@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小姐牌好好玩</title>
+    <style>
+        /* CSS for styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #card-image-container {
+            width: 125px;
+            height: 182px;
+            margin: 20px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+
+        #card-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        #draw-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #draw-button:hover {
+            background-color: #45a049;
+        }
+
+        #remaining-cards {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        #card-description {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>小姐牌</h1>
+    <div id="card-image-container">
+        <div id="card-image">?</div>
+    </div>
+    <button id="draw-button">抽</button>
+    <p id="remaining-cards">剩餘張數: 52</p>
+    <div id="card-description"></div>
+
+    <script>
+        // JavaScript for functionality
+        const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        const descriptions = {
+            '2': '小姐牌，抽到的人幫自己取一個花名。任何人需要喝酒時，都可以喊小姐陪喝。',
+            '3': '菜園果園動物園',
+            '4': '男生喝',
+            '5': '照相機，可以在任何時候喊「Camera」，抓到在動的就喝。',
+            '6': '文字獄，指定一個字詞，接下來的遊戲都不能講到這個。Ex：你',
+            '7': '七 & 七的倍數',
+            '8': '女生喝',
+            '9': '自己喝',
+            '10': '神經病牌，抽到這張卡你成為神經病，只要有人回應你的話，他就要喝。',
+            'J': '左邊喝',
+            'Q': '右邊喝',
+            'K': '公杯',
+            'A': '指定喝'
+        };
+        let deck = [];
+
+        // Initialize deck
+        function initDeck() {
+            deck = [];
+            for (let suit of suits) {
+                for (let value of values) {
+                    let valueCode = (value === '10') ? '0' : value; // Adjust value for '10'
+                    deck.push({
+                        suit: suit,
+                        value: value,
+                        img: `https://deckofcardsapi.com/static/img/${valueCode}${suit[0].toUpperCase()}.png`
+                    });
+                }
+            }
+        }
+
+        // Shuffle deck
+        function shuffleDeck() {
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        // Draw card
+        function drawCard() {
+            if (deck.length === 0) {
+                alert('No cards left in the deck!');
+                return;
+            }
+            const card = deck.pop();
+            document.getElementById('card-image').innerHTML = `<img src="${card.img}" alt="${card.value} of ${card.suit}" />`;
+            document.getElementById('card-description').innerText = descriptions[card.value];
+            updateRemainingCards();
+        }
+
+        // Update remaining cards
+        function updateRemainingCards() {
+            document.getElementById('remaining-cards').innerText = `剩餘張數: ${deck.length}`;
+        }
+
+        // Initial setup
+        document.getElementById('draw-button').addEventListener('click', drawCard);
+        initDeck();
+        shuffleDeck();
+        updateRemainingCards();
+    </script>
+</body>
+</html>
